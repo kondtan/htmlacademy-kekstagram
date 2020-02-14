@@ -1,5 +1,7 @@
+'use strict';
+
 var NAMES = ['Вася', 'Петя', 'Маша', 'Екатерина', 'Всеволод', 'Иннокентий', 'Елена'];
-var COMMENTS= [
+var COMMENTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -49,10 +51,10 @@ var generatePictureContent = function (pictureIndex) {
     description: 'description',
     likes: getRandomInteger(15, 200),
     comments: generateCommentsArray(),
-  }
+  };
 
   return pictureContent;
-}
+};
 
 var renderPicture = function (pictureContent) {
   var pictureElement = pictureTemplate.cloneNode(true);
@@ -62,17 +64,17 @@ var renderPicture = function (pictureContent) {
   pictureElement.querySelector('.picture__likes').textContent = pictureContent.likes;
 
   return pictureElement;
-}
+};
 
 var addElements = function () {
   var elements = [];
   for (var i = 0; i < 25; i++) {
-    var newElement = generatePictureContent(i + 1, 'Описание фото')
+    var newElement = generatePictureContent(i + 1, 'Описание фото');
     elements.push(newElement);
   }
 
   return elements;
-}
+};
 
 var insertPictures = function () {
   var fragment = document.createDocumentFragment();
@@ -82,7 +84,7 @@ var insertPictures = function () {
   }
 
   return fragment;
-}
+};
 
 picturesList = addElements(25);
 usersPictures.appendChild(insertPictures(picturesList));
