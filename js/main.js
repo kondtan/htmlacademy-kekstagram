@@ -1,5 +1,11 @@
 'use strict';
 
+// В выборе имени лучше короче или более развернуто? MAX_AMOUNT_OF_PICTURES - все понятно, длинно. MAX_OF_PICTURES короче, но менее понятно
+var MAX_AMOUNT_OF_PICTURES = 25;
+var MAX_AMOUNT_OF_AVATARS = 6;
+var MAX_AMOUNT_OF_COMMENTS = 11;
+var MAX_AMOUNT_OF_LIKES = 200;
+var MIN_AMOUNT_OF_LIKES = 15;
 var NAMES = ['Вася', 'Петя', 'Маша', 'Екатерина', 'Всеволод', 'Иннокентий', 'Елена'];
 var COMMENTS = [
   'Всё отлично!',
@@ -26,7 +32,7 @@ var getRandomInteger = function (min, max) {
 
 var generateComment = function () {
   var comment = {
-    avatar: 'img/avatar-' + getRandomInteger(1, 6) + '.jpg',
+    avatar: 'img/avatar-' + getRandomInteger(1, MAX_AMOUNT_OF_AVATARS) + '.jpg',
     message: getRandomArrayElement(COMMENTS),
     name: getRandomInteger(NAMES)
   };
@@ -35,7 +41,7 @@ var generateComment = function () {
 };
 
 var generateCommentsArray = function () {
-  var commentsAmount = getRandomInteger(1, 11);
+  var commentsAmount = getRandomInteger(1, MAX_AMOUNT_OF_COMMENTS);
   var comments = [];
 
   for (var i = 0; i <= commentsAmount; i++) {
@@ -49,7 +55,7 @@ var generatePictureContent = function (pictureIndex) {
   var pictureContent = {
     url: 'photos/' + pictureIndex + '.jpg',
     description: 'description',
-    likes: getRandomInteger(15, 200),
+    likes: getRandomInteger(MIN_AMOUNT_OF_LIKES, MAX_AMOUNT_OF_LIKES),
     comments: generateCommentsArray(),
   };
 
@@ -66,10 +72,10 @@ var renderPicture = function (pictureContent) {
   return pictureElement;
 };
 
-var addElements = function () {
+var generatePicturesArray = function () {
   var elements = [];
-  for (var i = 0; i < 25; i++) {
-    var newElement = generatePictureContent(i + 1, 'Описание фото');
+  for (var i = 0; i < MAX_AMOUNT_OF_PICTURES; i++) {
+    var newElement = generatePictureContent(i + 1);
     elements.push(newElement);
   }
 
@@ -79,12 +85,12 @@ var addElements = function () {
 var insertPictures = function () {
   var fragment = document.createDocumentFragment();
 
-  for (var i = 1; i < 26; i++) {
+  for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
     fragment.appendChild(renderPicture(generatePictureContent(i)));
   }
 
   return fragment;
 };
 
-picturesList = addElements(25);
+picturesList = generatePicturesArray(MAX_AMOUNT_OF_PICTURES);
 usersPictures.appendChild(insertPictures(picturesList));
