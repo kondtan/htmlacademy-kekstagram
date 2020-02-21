@@ -1,6 +1,5 @@
 'use strict';
 
-// В выборе имени лучше короче или более развернуто? MAX_AMOUNT_OF_PICTURES - все понятно, длинно. MAX_OF_PICTURES короче, но менее понятно
 var MAX_AMOUNT_OF_PICTURES = 25;
 var MAX_AMOUNT_OF_AVATARS = 6;
 var MAX_AMOUNT_OF_COMMENTS = 11;
@@ -20,21 +19,24 @@ var pictureTemplate = document.querySelector('#picture')
   .querySelector('.picture');
 var usersPictures = document.querySelector('.pictures');
 var picturesList = [];
+var bigPicture = document.querySelector('.big-picture');
+var commentsList = document.querySelector('.social__comments');
+var commentTemplate = document.querySelector('#comment');
 
 var getRandomArrayElement = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
 
 var getRandomInteger = function (min, max) {
-  var random = Math.random() * (max + 1) + min;
+  var random = Math.random() * (max - 1) + min;
   return Math.floor(random);
 };
 
 var generateComment = function () {
   var comment = {
-    avatar: 'img/avatar-' + getRandomInteger(1, MAX_AMOUNT_OF_AVATARS) + '.jpg',
+    avatar: 'img/avatar-' + getRandomInteger(1, MAX_AMOUNT_OF_AVATARS) + '.svg',
     message: getRandomArrayElement(COMMENTS),
-    name: getRandomInteger(NAMES)
+    name: getRandomArrayElement(NAMES)
   };
 
   return comment;
@@ -94,3 +96,48 @@ var insertPictures = function () {
 
 picturesList = generatePicturesArray(MAX_AMOUNT_OF_PICTURES);
 usersPictures.appendChild(insertPictures(picturesList));
+
+// задание 7, показываем первую фотографию из массива
+var showBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+};
+
+var assembleComment = function (comment) {
+  var commentClone = commentTemplate.content.cloneNode(true);
+
+  commentClone.querySelector('.social__picture').src = comment.avatar;
+  commentClone.querySelector('.social__picture').alt = comment.name;
+  commentClone.querySelector('.social__text').textContent = comment.message;
+
+  return commentClone;
+};
+
+var renderComments = function (commentsArray) {
+  for (var i = 0; i < commentsArray.length; i++) {
+    var newComment = assembleComment(commentsArray[i]);
+    commentsList.appendChild(newComment);
+  }
+};
+
+var hideCounters = function () {
+  var commentsCounter = bigPicture.querySelector('.social__comment-count');
+  var commentsLoader = bigPicture.querySelector('.comments-loader');
+
+  commentsCounter.classList.add('hidden');
+  commentsLoader.classList.add('hidden');
+};
+
+var fillBigPictureInfo = function () {
+  document.querySelector('body').classList.add('modal-open');
+  hideCounters();
+
+  bigPicture.querySelector('.big-picture__img').src = picturesList[0].url;
+  bigPicture.querySelector('.likes-count').textContent = picturesList[0].likes;
+  bigPicture.querySelector('.comments-count').textContent = picturesList[0].comments.length;
+  bigPicture.querySelector('.social__caption').textContent = picturesList[0].description;
+
+  renderComments(picturesList[0].comments);
+  showBigPicture();
+};
+
+fillBigPictureInfo();
