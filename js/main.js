@@ -32,7 +32,7 @@ var getRandomInteger = function (min, max) {
   return Math.floor(random);
 };
 
-var generateComment = function () {
+var createMockComment = function () {
   var comment = {
     avatar: 'img/avatar-' + getRandomInteger(1, MAX_AMOUNT_OF_AVATARS) + '.svg',
     message: getRandomArrayElement(COMMENTS),
@@ -42,23 +42,23 @@ var generateComment = function () {
   return comment;
 };
 
-var generateCommentsArray = function () {
+var createMockCommentArray = function () {
   var commentsAmount = getRandomInteger(1, MAX_AMOUNT_OF_COMMENTS);
   var comments = [];
 
   for (var i = 0; i <= commentsAmount; i++) {
-    comments.push(generateComment());
+    comments.push(createMockComment());
   }
 
   return comments;
 };
 
-var generatePictureContent = function (pictureIndex) {
+var createMockPicture = function (pictureIndex) {
   var pictureContent = {
     url: 'photos/' + pictureIndex + '.jpg',
     description: 'description',
     likes: getRandomInteger(MIN_AMOUNT_OF_LIKES, MAX_AMOUNT_OF_LIKES),
-    comments: generateCommentsArray(),
+    comments: createMockCommentArray(),
   };
 
   return pictureContent;
@@ -74,35 +74,32 @@ var renderPicture = function (pictureContent) {
   return pictureElement;
 };
 
-var generatePicturesArray = function () {
+var createMockPictureArray = function () {
   var elements = [];
   for (var i = 0; i < MAX_AMOUNT_OF_PICTURES; i++) {
-    var newElement = generatePictureContent(i + 1);
+    var newElement = createMockPicture(i + 1);
     elements.push(newElement);
   }
 
   return elements;
 };
 
-var insertPictures = function () {
+var renderPictures = function () {
   var fragment = document.createDocumentFragment();
 
   for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
-    fragment.appendChild(renderPicture(generatePictureContent(i)));
+    fragment.appendChild(renderPicture(createMockPicture(i)));
   }
 
   return fragment;
 };
 
-picturesList = generatePicturesArray(MAX_AMOUNT_OF_PICTURES);
-usersPictures.appendChild(insertPictures(picturesList));
+picturesList = createMockPictureArray(MAX_AMOUNT_OF_PICTURES);
+usersPictures.appendChild(renderPictures(picturesList));
 
 // задание 7, показываем первую фотографию из массива
-var showBigPicture = function () {
-  bigPicture.classList.remove('hidden');
-};
 
-var assembleComment = function (comment) {
+var renderComment = function (comment) {
   var commentClone = commentTemplate.content.cloneNode(true);
 
   commentClone.querySelector('.social__picture').src = comment.avatar;
@@ -112,11 +109,14 @@ var assembleComment = function (comment) {
   return commentClone;
 };
 
-var renderComments = function (commentsArray) {
-  for (var i = 0; i < commentsArray.length; i++) {
-    var newComment = assembleComment(commentsArray[i]);
-    commentsList.appendChild(newComment);
+var renderCommentArray = function (commentArray) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < commentArray.length; i++) {
+    fragment.appendChild(renderComment(commentArray[i]));
   }
+
+  return fragment;
 };
 
 var hideCounters = function () {
@@ -127,17 +127,22 @@ var hideCounters = function () {
   commentsLoader.classList.add('hidden');
 };
 
-var fillBigPictureInfo = function () {
-  document.querySelector('body').classList.add('modal-open');
-  hideCounters();
-
-  bigPicture.querySelector('.big-picture__img').src = picturesList[0].url;
-  bigPicture.querySelector('.likes-count').textContent = picturesList[0].likes;
-  bigPicture.querySelector('.comments-count').textContent = picturesList[0].comments.length;
-  bigPicture.querySelector('.social__caption').textContent = picturesList[0].description;
-
-  renderComments(picturesList[0].comments);
-  showBigPicture();
+// превратила картинку в аргумент, ещё была ошибка: искала src у дива .big-picture__img, когда src у картинки img
+var renderBigPicture = function (pic) {
+  bigPicture.querySelector('.big-picture__img img').src = pic.url;
+  bigPicture.querySelector('.likes-count').textContent = pic.likes;
+  bigPicture.querySelector('.comments-count').textContent = pic.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = pic.description;
 };
 
-fillBigPictureInfo();
+var showBigPicture = function (pic) {
+  hideCounters();
+
+  bigPicture.classList.remove('hidden');
+  document.querySelector('body').classList.add('modal-open');
+
+  renderBigPicture(pic);
+  commentsList.appendChild(renderCommentArray(pic.comments));
+};
+
+showBigPicture(picturesList[0]);
