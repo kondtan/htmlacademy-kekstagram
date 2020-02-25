@@ -1,6 +1,5 @@
 'use strict';
 
-// В выборе имени лучше короче или более развернуто? MAX_AMOUNT_OF_PICTURES - все понятно, длинно. MAX_OF_PICTURES короче, но менее понятно
 var MAX_AMOUNT_OF_PICTURES = 25;
 var MAX_AMOUNT_OF_AVATARS = 6;
 var MAX_AMOUNT_OF_COMMENTS = 11;
@@ -20,43 +19,46 @@ var pictureTemplate = document.querySelector('#picture')
   .querySelector('.picture');
 var usersPictures = document.querySelector('.pictures');
 var picturesList = [];
+var bigPicture = document.querySelector('.big-picture');
+var commentsList = document.querySelector('.social__comments');
+var commentTemplate = document.querySelector('#comment');
 
 var getRandomArrayElement = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
 
 var getRandomInteger = function (min, max) {
-  var random = Math.random() * (max + 1) + min;
+  var random = Math.random() * (max - 1) + min;
   return Math.floor(random);
 };
 
-var generateComment = function () {
+var createMockComment = function () {
   var comment = {
-    avatar: 'img/avatar-' + getRandomInteger(1, MAX_AMOUNT_OF_AVATARS) + '.jpg',
+    avatar: 'img/avatar-' + getRandomInteger(1, MAX_AMOUNT_OF_AVATARS) + '.svg',
     message: getRandomArrayElement(COMMENTS),
-    name: getRandomInteger(NAMES)
+    name: getRandomArrayElement(NAMES)
   };
 
   return comment;
 };
 
-var generateCommentsArray = function () {
+var createMockCommentArray = function () {
   var commentsAmount = getRandomInteger(1, MAX_AMOUNT_OF_COMMENTS);
   var comments = [];
 
   for (var i = 0; i <= commentsAmount; i++) {
-    comments.push(generateComment());
+    comments.push(createMockComment());
   }
 
   return comments;
 };
 
-var generatePictureContent = function (pictureIndex) {
+var createMockPicture = function (pictureIndex) {
   var pictureContent = {
     url: 'photos/' + pictureIndex + '.jpg',
     description: 'description',
     likes: getRandomInteger(MIN_AMOUNT_OF_LIKES, MAX_AMOUNT_OF_LIKES),
-    comments: generateCommentsArray(),
+    comments: createMockCommentArray(),
   };
 
   return pictureContent;
@@ -72,25 +74,75 @@ var renderPicture = function (pictureContent) {
   return pictureElement;
 };
 
-var generatePicturesArray = function () {
+var createMockPictureArray = function () {
   var elements = [];
   for (var i = 0; i < MAX_AMOUNT_OF_PICTURES; i++) {
-    var newElement = generatePictureContent(i + 1);
+    var newElement = createMockPicture(i + 1);
     elements.push(newElement);
   }
 
   return elements;
 };
 
-var insertPictures = function () {
+var renderPictures = function () {
   var fragment = document.createDocumentFragment();
 
   for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
-    fragment.appendChild(renderPicture(generatePictureContent(i)));
+    fragment.appendChild(renderPicture(createMockPicture(i)));
   }
 
   return fragment;
 };
 
-picturesList = generatePicturesArray(MAX_AMOUNT_OF_PICTURES);
-usersPictures.appendChild(insertPictures(picturesList));
+picturesList = createMockPictureArray(MAX_AMOUNT_OF_PICTURES);
+usersPictures.appendChild(renderPictures(picturesList));
+
+// задание 7, показываем первую фотографию из массива
+
+var renderComment = function (comment) {
+  var commentClone = commentTemplate.content.cloneNode(true);
+
+  commentClone.querySelector('.social__picture').src = comment.avatar;
+  commentClone.querySelector('.social__picture').alt = comment.name;
+  commentClone.querySelector('.social__text').textContent = comment.message;
+
+  return commentClone;
+};
+
+var renderCommentArray = function (commentArray) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < commentArray.length; i++) {
+    fragment.appendChild(renderComment(commentArray[i]));
+  }
+
+  return fragment;
+};
+
+var hideCounters = function () {
+  var commentsCounter = bigPicture.querySelector('.social__comment-count');
+  var commentsLoader = bigPicture.querySelector('.comments-loader');
+
+  commentsCounter.classList.add('hidden');
+  commentsLoader.classList.add('hidden');
+};
+
+// превратила картинку в аргумент, ещё была ошибка: искала src у дива .big-picture__img, когда src у картинки img
+var renderBigPicture = function (pic) {
+  bigPicture.querySelector('.big-picture__img img').src = pic.url;
+  bigPicture.querySelector('.likes-count').textContent = pic.likes;
+  bigPicture.querySelector('.comments-count').textContent = pic.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = pic.description;
+};
+
+var showBigPicture = function (pic) {
+  hideCounters();
+
+  bigPicture.classList.remove('hidden');
+  document.querySelector('body').classList.add('modal-open');
+
+  renderBigPicture(pic);
+  commentsList.appendChild(renderCommentArray(pic.comments));
+};
+
+showBigPicture(picturesList[0]);
