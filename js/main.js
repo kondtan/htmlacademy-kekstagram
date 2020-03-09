@@ -168,12 +168,12 @@ var closeBigPicture = function () {
 
 // задание 4.3, показ любой фотографии в полноразмерном режиме
 
-usersPictures.addEventListener('click', function(evt) {
+usersPictures.addEventListener('click', function (evt) {
   evt.preventDefault();
   var closestRelative = evt.target.closest('a').querySelector('img').src;
-  var pictureIndex = parseInt(closestRelative.substring(closestRelative.lastIndexOf('/')+1).replace(/\.[^.$]+$/, ''), 10) - 1;
+  var pictureIndex = parseInt(closestRelative.substring(closestRelative.lastIndexOf('/') + 1).replace(/\.[^.$]+$/, ''), 10) - 1;
   showBigPicture(picturesList[pictureIndex]);
-})
+});
 
 // задание 4.2, загрузка изображения и показ формы для редактирования
 var ESC_KEY = 27;
