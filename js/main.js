@@ -154,7 +154,7 @@ if (!picturesList) {
 var ESC_KEY = 27;
 var MAX_HASHTAGS_AMOUNT = 5;
 var MAX_HASHTAG_CHARACTERS = 20;
-var HASHTAG_PATTERN = /[^#0-9a-zа-яёA-ZА-ЯЁ]/g;
+var HASHTAG_PATTERN = /[^0-9a-zа-яёA-ZА-ЯЁ]+/g;
 var uploadOverlay = document.querySelector('.img-upload__overlay');
 var uploadPreview = uploadOverlay.querySelector('.img-upload__preview img');
 var effectLevelSlider = uploadOverlay.querySelector('.img-upload__effect-level');
@@ -227,16 +227,16 @@ effectLevelPin.addEventListener('mouseup', function () {
 // валидируем хэштеги
 var validation = function () {
   // превращаем string в array
-  var hashtags = hashtagsInput.value.split(' ');
-
+  var hashtags = hashtagsInput.value.replace(/  +/g, ' ').trim().split(' ');
   // сбрасываем проверку перед каждым нажатием
   hashtagsInput.setCustomValidity('');
-
-  if (hashtags.length > MAX_HASHTAGS_AMOUNT) {
+  if (hashtags.length === 1 && hashtags[0] === '') {
+    hashtagsInput.setCustomValidity('');
+  } else if (hashtags.length > MAX_HASHTAGS_AMOUNT) {
     hashtagsInput.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
   } else {
-    // ошибка была в <= hashtags.length
-    for (var i = 0; i < hashtags.length; i++) {
+    // итерируем с конца на случай, если придется удалять пустые элементы массива. Например, лишние пробелы
+    for (var i = hashtags.length - 1; i >= 0; i--) {
       var hashtag = hashtags[i];
       var hashtagCopy = false;
 
@@ -252,7 +252,8 @@ var validation = function () {
       if (hashtag.length > MAX_HASHTAG_CHARACTERS) {
         hashtagsInput.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
       }
-      if (HASHTAG_PATTERN.test(hashtag)) {
+      // сделала по замечанию "!hashtag.match(HASHTAG_PATTERN)", но это сообщение все равно всплывало при вводе корректного хэштега
+      if (hashtag.slice(1).match(HASHTAG_PATTERN)) {
         hashtagsInput.setCustomValidity('Строка после решётки должна состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т.п.), символы пунктуации (тире, дефис, запятая и т.п.), эмодзи и т.д.');
       }
       if ((hashtag.length === 1) && (hashtag === '#')) {
@@ -266,4 +267,3 @@ var validation = function () {
 };
 
 hashtagsInput.addEventListener('input', validation);
-
