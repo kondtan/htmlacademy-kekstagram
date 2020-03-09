@@ -135,6 +135,12 @@ var renderBigPicture = function (pic) {
   bigPicture.querySelector('.social__caption').textContent = pic.description;
 };
 
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEY) {
+    closeBigPicture();
+  }
+};
+
 var showBigPicture = function (pic) {
   hideCounters();
 
@@ -142,13 +148,32 @@ var showBigPicture = function (pic) {
   document.querySelector('body').classList.add('modal-open');
 
   renderBigPicture(pic);
+  commentsList.innerHTML = '';
   commentsList.appendChild(renderCommentArray(pic.comments));
+
+  bigPicture.querySelector('.big-picture__cancel').addEventListener('click', closeBigPicture);
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  bigPicture.querySelector('.big-picture__cancel').removeEventListener('click', closeBigPicture);
+  document.removeEventListener('keydown', onBigPictureEscPress);
 };
 
 // невозможное условие, чтобы большая картинка не отбражалась и линтер не ругался
-if (!picturesList) {
-  showBigPicture(picturesList[0]);
-}
+// if (!picturesList) {
+// showBigPicture(picturesList[4]);
+// }
+
+// задание 4.3, показ любой фотографии в полноразмерном режиме
+
+usersPictures.addEventListener('click', function(evt) {
+  evt.preventDefault();
+  var closestRelative = evt.target.closest('a').querySelector('img').src;
+  var pictureIndex = parseInt(closestRelative.substring(closestRelative.lastIndexOf('/')+1).replace(/\.[^.$]+$/, ''), 10) - 1;
+  showBigPicture(picturesList[pictureIndex]);
+})
 
 // задание 4.2, загрузка изображения и показ формы для редактирования
 var ESC_KEY = 27;
@@ -178,7 +203,8 @@ var openEditPhotoForm = function () {
 };
 
 var closeEditPhotoForm = function () {
-  if (!document.activeElement.classList.contains('text__hashtags')) {
+  // если фокус находится в поле ввода хэштега или комментария, нажатие на Esc не приводит к закрытию формы редактирования изображения
+  if (!document.activeElement.classList.contains('text__hashtags') && !document.activeElement.classList.contains('text__description')) {
     // сбрасываем значение поля выбора файла #upload-file
     uploadFileInput.value = '';
 
