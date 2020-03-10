@@ -64,12 +64,13 @@ var createMockPicture = function (pictureIndex) {
   return pictureContent;
 };
 
-var renderPicture = function (pictureContent) {
+var renderPicture = function (pictureContent, pictureIndex) {
   var pictureElement = pictureTemplate.cloneNode(true);
 
   pictureElement.querySelector('.picture__img').src = pictureContent.url;
   pictureElement.querySelector('.picture__comments').textContent = pictureContent.comments.length;
   pictureElement.querySelector('.picture__likes').textContent = pictureContent.likes;
+  pictureElement.dataset.id = pictureIndex;
 
   return pictureElement;
 };
@@ -88,7 +89,7 @@ var renderPictures = function () {
   var fragment = document.createDocumentFragment();
 
   for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
-    fragment.appendChild(renderPicture(createMockPicture(i)));
+    fragment.appendChild(renderPicture(createMockPicture(i), i - 1));
   }
 
   return fragment;
@@ -98,6 +99,7 @@ picturesList = createMockPictureArray(MAX_AMOUNT_OF_PICTURES);
 usersPictures.appendChild(renderPictures(picturesList));
 
 // задание 7, показываем первую фотографию из массива
+var closeBigPictureButton = bigPicture.querySelector('.big-picture__cancel');
 
 var renderComment = function (comment) {
   var commentClone = commentTemplate.content.cloneNode(true);
@@ -151,12 +153,13 @@ var showBigPicture = function (pic) {
   commentsList.innerHTML = '';
   commentsList.appendChild(renderCommentArray(pic.comments));
 
-  bigPicture.querySelector('.big-picture__cancel').addEventListener('click', closeBigPicture);
+  closeBigPictureButton.addEventListener('click', closeBigPicture);
   document.addEventListener('keydown', onBigPictureEscPress);
 };
 
 var closeBigPicture = function () {
   bigPicture.classList.add('hidden');
+  document.querySelector('body').classList.remove('modal-open');
   bigPicture.querySelector('.big-picture__cancel').removeEventListener('click', closeBigPicture);
   document.removeEventListener('keydown', onBigPictureEscPress);
 };
@@ -169,10 +172,11 @@ var closeBigPicture = function () {
 // задание 4.3, показ любой фотографии в полноразмерном режиме
 
 usersPictures.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  var closestRelative = evt.target.closest('a').querySelector('img').src;
-  var pictureIndex = parseInt(closestRelative.substring(closestRelative.lastIndexOf('/') + 1).replace(/\.[^.$]+$/, ''), 10) - 1;
-  showBigPicture(picturesList[pictureIndex]);
+  if (evt.target.closest('a')) {
+    evt.preventDefault();
+    var pictureIndex = parseInt(evt.target.closest('a').dataset.id, 10);
+    showBigPicture(picturesList[pictureIndex]);
+  }
 });
 
 // задание 4.2, загрузка изображения и показ формы для редактирования
