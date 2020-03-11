@@ -23,7 +23,7 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
-      fragment.appendChild(renderPicture(window.data.createMockPicture(i), i - 1));
+      fragment.appendChild(renderPicture(picturesList[i - 1], i - 1));
     }
 
     return fragment;

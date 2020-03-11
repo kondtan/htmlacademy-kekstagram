@@ -59,7 +59,6 @@
   };
 
   window.data = {
-    createMockPicture: createMockPicture,
     createMockPictureArray: createMockPictureArray
   };
 })();
