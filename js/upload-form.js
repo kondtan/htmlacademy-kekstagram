@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var Keycode = window.util.Keycode;
+  var KEYCODE = window.util.KEYCODE;
   var uploadFileInput = document.querySelector('#upload-file');
   var editPhotoForm = document.querySelector('.img-upload__overlay');
   var closeEditPhotoFormButton = document.querySelector('#upload-cancel');
@@ -29,7 +29,7 @@
   };
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === Keycode.ESC_KEY) {
+    if (evt.keyCode === KEYCODE.ESC_KEY) {
       closeEditPhotoForm();
     }
   };
