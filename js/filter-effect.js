@@ -1,7 +1,10 @@
 'use strict';
 
 (function () {
-  // var DEFAULT_EFFECT_LEVEL = 100;
+  var DEFAULT_EFFECT_LEVEL = 1;
+  var MAX_PHOBOS_INTENCITY = 3;
+  var MAX_HEAT_INTENCITY = 3;
+  var MAX_MARVIN_INTENCITY = 100;
 
   var uploadOverlay = document.querySelector('.img-upload__overlay');
   var uploadPreview = uploadOverlay.querySelector('.img-upload__preview img');
@@ -9,14 +12,14 @@
   var effectLevelPin = document.querySelector('.effect-level__pin');
   var effectLevelDepth = document.querySelector('.effect-level__depth');
   var effectLevelLine = document.querySelector('.effect-level__line');
-  // var effectLevelValue = document.querySelector('.effect-level__value');
+  var effectLevelValue = document.querySelector('.effect-level__value');
 
   // насыщенность по умолчанию
-  // var setDefaultDepth = function () {
-  //   effectLevelPin.style.left = DEFAULT_EFFECT_LEVEL + '%';
-  //   effectLevelDepth.style.width = DEFAULT_EFFECT_LEVEL + '%';
-  //   effectLevelValue.value = DEFAULT_EFFECT_LEVEL;
-  // };
+  var setDefaultDepth = function () {
+    effectLevelPin.style.left = (DEFAULT_EFFECT_LEVEL * 100) + '%';
+    effectLevelDepth.style.width = (DEFAULT_EFFECT_LEVEL * 100) + '%';
+    effectLevelValue.value = DEFAULT_EFFECT_LEVEL;
+  };
 
   // обнуляем эффект: сбрасываем класс у превью; если слайдер спрятан, то показываем; ставим пин и уровень насыщенности эффекта в начало
   var clearEffects = function () {
@@ -45,32 +48,27 @@
     evt.preventDefault();
 
     var minSliderPosition = effectLevelLine.getBoundingClientRect().left;
-    var maxSliderPosition = effectLevelLine.getBoundingClientRect().right;
-
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
+    var sliderWidth = effectLevelLine.getBoundingClientRect().width;
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      var shift = {
-        x: startCoords.x - moveEvt.clientX
-      };
+      var cursorPosition = moveEvt.clientX - minSliderPosition;
+      var newPosition;
 
-      startCoords = {
-        x: moveEvt.clientX
-      };
+      if (cursorPosition < 0) {
+        newPosition = 0;
+      } else if (cursorPosition > sliderWidth) {
+        newPosition = sliderWidth;
+      } else {
+        newPosition = cursorPosition;
+      }
 
-      if (startCoords.x > minSliderPosition && startCoords.x < maxSliderPosition) {
-        effectLevelPin.style.left = (effectLevelPin.offsetLeft - shift.x) + 'px';
-      }
-      if (effectLevelPin.style.left < minSliderPosition) {
-        effectLevelPin.style.left = minSliderPosition;
-      } else if (effectLevelPin.style.left > maxSliderPosition) {
-        effectLevelPin.style.left = maxSliderPosition;
-      }
+      effectLevelPin.style.left = newPosition.toString() + 'px';
+      effectLevelDepth.style.width = newPosition.toString() + 'px';
+
+      changeFilter();
+
     };
 
     var onMouseUp = function (upEvt) {
@@ -86,8 +84,47 @@
   });
 
   // определяем интенсивность наложенного фильтра
-  effectLevelPin.addEventListener('mouseup', function () {
-    var filterEffectIntensity = effectLevelDepth.offsetWidth / effectLevelLine.offsetWidth;
-    return filterEffectIntensity;
-  });
+  var changeFilter = function () {
+
+    var intensity = Math.round(effectLevelDepth.offsetWidth / effectLevelLine.offsetWidth * 100) / 100;
+    effectLevelValue.value = intensity;
+
+    switch (uploadPreview.classList[0]) {
+      case 'effects__preview--none':
+        uploadPreview.style.filter = 'none';
+        break;
+      case 'effects__preview--chrome':
+        uploadPreview.style.filter = 'grayscale(' + intensity.toString() + ')';
+        break;
+      case 'effects__preview--sepia':
+        uploadPreview.style.filter = 'sepia(' + intensity.toString() + ')';
+        break;
+      case 'effects__preview--marvin':
+        uploadPreview.style.filter = 'invert(' + (intensity * MAX_MARVIN_INTENCITY).toString() + '%)';
+        break;
+      case 'effects__preview--phobos':
+        uploadPreview.style.filter = 'blur(' + (intensity * MAX_PHOBOS_INTENCITY).toString() + 'px)';
+        break;
+      case 'effects__preview--heat':
+        uploadPreview.style.filter = 'brightness(' + (intensity * MAX_HEAT_INTENCITY).toString() + ')';
+        break;
+    }
+  };
+
+  window.onload = function () {
+    setDefaultDepth();
+  };
+
+  function callback() {
+    changeFilter();
+  }
+
+  var config = {
+    attributes: true,
+    attributeOldValue: true,
+    attributeFilter: ['class']
+  };
+
+  var observer = new MutationObserver(callback);
+  observer.observe(uploadPreview, config);
 })();
