@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var KEYCODE = window.util.KEYCODE;
+  var KEYCODE = window.util.Keycode;
   var uploadFileInput = document.querySelector('#upload-file');
   var editPhotoForm = document.querySelector('.img-upload__overlay');
   var closeEditPhotoFormButton = document.querySelector('#upload-cancel');
