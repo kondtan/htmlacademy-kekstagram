@@ -40,33 +40,21 @@
     }
   });
 
-  // Геттер, который собирает все отступы по родителям, но из-за верстки получается неверное значение
-
-  // var getMinSliderPosition = function (element) {
-  //   var topNode = element;
-  //   var totalOffset = 0;
-  //   while (topNode.parentElement) {
-  //     totalOffset += topNode.offsetLeft;
-  //     topNode = topNode.parentElement;
-  //   }
-  //   return totalOffset;
-  // };
-
   // вешаем на пин слушатель клика
   effectLevelPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-    var minSliderPosition = effectLevelLine.getBoundingClientRect().left;
-    var sliderWidth = effectLevelLine.getBoundingClientRect().width;
+    var minSliderPosition = effectLevelLine.offsetLeft - effectLevelPin.offsetWidth;
+    var sliderWidth = minSliderPosition + effectLevelLine.offsetWidth;
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      var cursorPosition = moveEvt.clientX - minSliderPosition;
+      var cursorPosition = moveEvt.movementX + effectLevelPin.offsetLeft;
       var newPosition;
       var intensity;
 
-      if (cursorPosition < 0) {
+      if (cursorPosition < minSliderPosition) {
         newPosition = 0;
       } else if (cursorPosition > sliderWidth) {
         newPosition = sliderWidth;
