@@ -21,7 +21,7 @@
 
   // меняем значение ресайза
   var decreaseScaleValue = function () {
-    var scaleValue = parseInt(scaleControlValue.value.replace('%', ''), 10);
+    var scaleValue = parseInt(scaleControlValue.value, 10);
 
     if (scaleValue > MIN_SCALE_VALUE) {
       scaleValue = scaleValue - SCALE_STEP;
@@ -31,7 +31,7 @@
   };
 
   var increaseScaleValue = function () {
-    var scaleValue = parseInt(scaleControlValue.value.replace('%', ''), 10);
+    var scaleValue = parseInt(scaleControlValue.value, 10);
 
     if (scaleValue < MAX_SCALE_VALUE) {
       scaleValue = scaleValue + SCALE_STEP;
