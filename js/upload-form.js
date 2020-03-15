@@ -15,6 +15,7 @@
   var openEditPhotoForm = function () {
     editPhotoForm.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
+    window.scale.setNewScaleValue(100);
   };
 
   var closeEditPhotoForm = function () {

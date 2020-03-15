@@ -31,13 +31,13 @@
       clearEffects();
       // присваеваем эффект актуального фильтра
       uploadPreview.classList.add('effects__preview--' + uploadOverlay.querySelector('input[type="radio"]:checked').value);
+      applyFilter(DEFAULT_EFFECT_LEVEL);
     }
 
     if (uploadOverlay.querySelector('input[type="radio"]:checked').value === 'none') {
       effectLevelSlider.classList.add('visually-hidden');
+      uploadPreview.style.filter = '';
     }
-
-    applyFilter(DEFAULT_EFFECT_LEVEL);
   });
 
   // Геттер, который собирает все отступы по родителям, но из-за верстки получается неверное значение
