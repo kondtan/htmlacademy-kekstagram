@@ -35,6 +35,13 @@
     }
   };
 
+  // editPhotoForm.addEventListener('submit', function (evt) {
+  //   window.upload(new FormData(form), function (response) {
+  //     userDialog.classList.add('hidden');
+  //   });
+  //   evt.preventDefault();
+  // });
+
   closeEditPhotoFormButton.addEventListener('click', closeEditPhotoForm);
   uploadFileInput.addEventListener('change', openEditPhotoForm);
 })();
