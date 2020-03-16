@@ -15,7 +15,6 @@
     'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
     'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
   ];
-  var pictureArray = [];
 
   var createMockComment = function () {
     var comment = {
@@ -59,14 +58,12 @@
     return elements;
   };
 
-  var copyRemoteData = function (data) {
-    window.data.pictureArray = JSON.parse(JSON.stringify(data));
-    window.gallery.loadPictures(window.data.pictureArray);
+  var parseRemoteData = function (data) {
+    window.gallery.loadPictures(JSON.parse(JSON.stringify(data)));
   };
 
   window.data = {
     createMockPictureArray: createMockPictureArray,
-    pictureArray: pictureArray,
-    copyRemoteData: copyRemoteData
+    parseRemoteData: parseRemoteData
   };
 })();
