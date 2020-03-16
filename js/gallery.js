@@ -6,7 +6,8 @@
   .content
   .querySelector('.picture');
   var usersPictures = document.querySelector('.pictures');
-  var picturesList = [];
+  var pictureArray = [];
+
 
   var renderPicture = function (pictureContent, pictureIndex) {
     var pictureElement = pictureTemplate.cloneNode(true);
@@ -19,24 +20,41 @@
     return pictureElement;
   };
 
-  var renderPictures = function () {
+  var renderPictures = function (pictures) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
-      fragment.appendChild(renderPicture(picturesList[i - 1], i - 1));
+    for (var i = 0; i < MAX_AMOUNT_OF_PICTURES; i++) {
+      fragment.appendChild(renderPicture(pictures[i], i));
     }
 
     return fragment;
   };
 
-  picturesList = window.data.createMockPictureArray(MAX_AMOUNT_OF_PICTURES);
-  usersPictures.appendChild(renderPictures(picturesList));
+  var loadPictures = function (pictures) {
+    usersPictures.appendChild(renderPictures(pictures));
+  };
+
+  var copyRemoteData = function (data) {
+    window.data.pictureArray = JSON.parse(JSON.stringify(data));
+    loadPictures(window.data.pictureArray);
+  };
+
+  window.load.requestData(copyRemoteData);
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
       evt.preventDefault();
       var pictureIndex = parseInt(evt.target.closest('a').dataset.id, 10);
-      window.picture.showBigPicture(picturesList[pictureIndex]);
+      window.picture.showBigPicture(window.data.pictureArray[pictureIndex]);
     }
   });
+
+  window.gallery = {
+    renderPictures: renderPictures,
+    usersPictures: usersPictures,
+    pictureArray: pictureArray
+  };
+
 })();
+
+
