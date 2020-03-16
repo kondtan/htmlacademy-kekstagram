@@ -6,7 +6,6 @@
   .content
   .querySelector('.picture');
   var usersPictures = document.querySelector('.pictures');
-  var pictureArray = [];
 
 
   var renderPicture = function (pictureContent, pictureIndex) {
@@ -34,12 +33,7 @@
     usersPictures.appendChild(renderPictures(pictures));
   };
 
-  var copyRemoteData = function (data) {
-    window.data.pictureArray = JSON.parse(JSON.stringify(data));
-    loadPictures(window.data.pictureArray);
-  };
-
-  window.load.requestData(copyRemoteData);
+  window.load.requestData(window.data.copyRemoteData);
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
@@ -52,7 +46,7 @@
   window.gallery = {
     renderPictures: renderPictures,
     usersPictures: usersPictures,
-    pictureArray: pictureArray
+    loadPictures: loadPictures
   };
 
 })();
