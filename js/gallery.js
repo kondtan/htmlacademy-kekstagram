@@ -6,7 +6,8 @@
   .content
   .querySelector('.picture');
   var usersPictures = document.querySelector('.pictures');
-  var picturesList = [];
+  var errorTemplate = document.querySelector('#error').content;
+  var pictureArray = [];
 
   var renderPicture = function (pictureContent, pictureIndex) {
     var pictureElement = pictureTemplate.cloneNode(true);
@@ -19,24 +20,41 @@
     return pictureElement;
   };
 
-  var renderPictures = function () {
+  var renderPictures = function (pictures) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 1; i < MAX_AMOUNT_OF_PICTURES; i++) {
-      fragment.appendChild(renderPicture(picturesList[i - 1], i - 1));
+    for (var i = 0; i < MAX_AMOUNT_OF_PICTURES; i++) {
+      fragment.appendChild(renderPicture(pictures[i], i));
     }
 
     return fragment;
   };
 
-  picturesList = window.data.createMockPictureArray(MAX_AMOUNT_OF_PICTURES);
-  usersPictures.appendChild(renderPictures(picturesList));
+  var loadPictures = function (pictures) {
+    pictureArray = pictures.slice();
+    usersPictures.appendChild(renderPictures(pictureArray));
+  };
+
+  var renderErrorMessage = function (message) {
+    var error = errorTemplate.cloneNode(true);
+    error.querySelector('button').innerHTML = 'Перезагрузите страницу';
+    error.querySelector('h2').innerHTML = message;
+    document.querySelector('main').appendChild(error);
+  };
+
+  window.load.requestData(loadPictures, renderErrorMessage);
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
       evt.preventDefault();
       var pictureIndex = parseInt(evt.target.closest('a').dataset.id, 10);
-      window.picture.showBigPicture(picturesList[pictureIndex]);
+      window.picture.showBigPicture(pictureArray[pictureIndex]);
     }
   });
+
+  window.gallery = {
+    renderPictures: renderPictures,
+    usersPictures: usersPictures,
+    loadPictures: loadPictures
+  };
 })();
