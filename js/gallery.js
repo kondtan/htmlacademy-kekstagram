@@ -6,6 +6,7 @@
   .content
   .querySelector('.picture');
   var usersPictures = document.querySelector('.pictures');
+  var errorTemplate = document.querySelector('#error').content;
   var pictureArray = [];
 
   var renderPicture = function (pictureContent, pictureIndex) {
@@ -30,24 +31,30 @@
   };
 
   var loadPictures = function (pictures) {
-    window.gallery.pictureArray = pictures;
-    usersPictures.appendChild(renderPictures(window.gallery.pictureArray));
+    pictureArray = pictures.slice();
+    usersPictures.appendChild(renderPictures(pictureArray));
   };
 
-  window.load.requestData(window.data.parseRemoteData);
+  var renderErrorMessage = function (message) {
+    var error = errorTemplate.cloneNode(true);
+    error.querySelector('button').innerHTML = 'Перезагрузите страницу';
+    error.querySelector('h2').innerHTML = message;
+    document.querySelector('main').appendChild(error);
+  };
+
+  window.load.requestData(loadPictures, renderErrorMessage);
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
       evt.preventDefault();
       var pictureIndex = parseInt(evt.target.closest('a').dataset.id, 10);
-      window.picture.showBigPicture(window.gallery.pictureArray[pictureIndex]);
+      window.picture.showBigPicture(pictureArray[pictureIndex]);
     }
   });
 
   window.gallery = {
     renderPictures: renderPictures,
     usersPictures: usersPictures,
-    loadPictures: loadPictures,
-    pictureArray: pictureArray
+    loadPictures: loadPictures
   };
 })();

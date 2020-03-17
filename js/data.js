@@ -58,12 +58,7 @@
     return elements;
   };
 
-  var parseRemoteData = function (data) {
-    window.gallery.loadPictures(JSON.parse(JSON.stringify(data)));
-  };
-
   window.data = {
-    createMockPictureArray: createMockPictureArray,
-    parseRemoteData: parseRemoteData
+    createMockPictureArray: createMockPictureArray
   };
 })();
