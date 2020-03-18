@@ -2,11 +2,10 @@
 
 (function () {
   var MAX_AMOUNT_OF_PICTURES = 25;
-  var pictureTemplate = document.querySelector('#picture')
-  .content
-  .querySelector('.picture');
+  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var usersPictures = document.querySelector('.pictures');
   var errorTemplate = document.querySelector('#error').content;
+  var successTemplate = document.querySelector('#success').content;
   var pictureArray = [];
 
   var renderPicture = function (pictureContent, pictureIndex) {
@@ -30,19 +29,46 @@
     return fragment;
   };
 
+  var changeCursorToLoading = function () {
+    document.querySelector('body').style.cursor = 'progress';
+  };
+
+  var changeCursorBack = function () {
+    document.querySelector('body').style.cursor = 'default';
+  };
+
   var loadPictures = function (pictures) {
+    changeCursorBack();
     pictureArray = pictures.slice();
     usersPictures.appendChild(renderPictures(pictureArray));
   };
 
   var renderErrorMessage = function (message) {
     var error = errorTemplate.cloneNode(true);
+    var errorButton = error.querySelector('.error__button');
     error.querySelector('button').innerHTML = 'Перезагрузите страницу';
     error.querySelector('h2').innerHTML = message;
     document.querySelector('main').appendChild(error);
+    changeCursorBack();
+    errorButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      location.reload();
+    });
   };
 
-  window.load.requestData(loadPictures, renderErrorMessage);
+  var renderSuccessMessage = function () {
+    var success = successTemplate.cloneNode(true);
+    var successButton = success.querySelector('.success__button');
+    document.querySelector('main').appendChild(success);
+    changeCursorBack();
+    successButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      document.querySelector('.success').remove();
+    });
+  };
+
+  window.async.requestData(loadPictures, renderErrorMessage);
+  changeCursorToLoading();
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
@@ -55,6 +81,9 @@
   window.gallery = {
     renderPictures: renderPictures,
     usersPictures: usersPictures,
-    loadPictures: loadPictures
+    loadPictures: loadPictures,
+    renderErrorMessage: renderErrorMessage,
+    renderSuccessMessage: renderSuccessMessage,
+    changeCursorToLoading: changeCursorToLoading
   };
 })();

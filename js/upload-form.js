@@ -39,18 +39,24 @@
     }
   };
 
-  uploadForm.addEventListener('submit', function (evt) {
-    var formDataConstructor = new FormData(uploadForm);
-  // для вывода отправляемых данных в консоль:
-    for (var pair of fd.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]);
-  }
-    evt.preventDefault();
+  var cleanupForm = function () {
+    window.gallery.changeCursorToLoading();
     window.effect.resetUploadForm();
     editPhotoForm.classList.add('hidden');
     document.body.classList.remove('modal-open');
     uploadCancelButton.removeEventListener('click', closeEditPhotoForm);
     document.removeEventListener('keydown', onPopupEscPress);
+  };
+
+  uploadForm.addEventListener('submit', function (evt) {
+    var formDataValue = new FormData(uploadForm);
+    cleanupForm();
+    window.async.uploadData(formDataValue, window.gallery.renderSuccessMessage, window.gallery.renderErrorMessage);
+    // для вывода отправляемых данных в консоль:
+    // for (var pair of formDataValue.entries()) {
+    //   console.log(pair[0]+ ', ' + pair[1]);
+    // };
+    evt.preventDefault();
   });
 
   uploadFileInput.addEventListener('change', openEditPhotoForm);
