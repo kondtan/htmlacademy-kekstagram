@@ -7,6 +7,7 @@
   var MAX_MARVIN_INTENCITY = 100;
 
   var uploadOverlay = document.querySelector('.img-upload__overlay');
+  var uploadForm = document.querySelector('.img-upload__form');
   var uploadPreview = uploadOverlay.querySelector('.img-upload__preview img');
   var effectLevelSlider = uploadOverlay.querySelector('.img-upload__effect-level');
   var effectLevelPin = document.querySelector('.effect-level__pin');
@@ -66,7 +67,7 @@
       effectLevelDepth.style.width = newPosition + 'px';
 
       intensity = Math.floor(effectLevelDepth.offsetWidth / effectLevelLine.offsetWidth * 100) / 100;
-      effectLevelValue.value = intensity;
+      effectLevelValue.value = intensity * 100;
 
       applyFilter(intensity);
     };
@@ -104,4 +105,16 @@
         uploadPreview.style.filter = '';
     }
   };
+
+  var resetUploadForm = function () {
+    uploadForm.reset();
+    uploadPreview.className = '';
+    applyFilter(DEFAULT_EFFECT_LEVEL);
+    effectLevelSlider.classList.add('visually-hidden');
+  };
+
+  window.effect = {
+    resetUploadForm: resetUploadForm
+  };
+
 })();

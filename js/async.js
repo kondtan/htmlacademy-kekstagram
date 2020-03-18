@@ -2,6 +2,7 @@
 
 (function () {
   var LOAD_URL = 'https://js.dump.academy/kekstagram/data';
+  var UPLOAD_URL = 'https://js.dump.academy/kekstagram';
   var StatusCode = {
     OK: 200,
     REQUEST_ERROR: 400,
@@ -18,6 +19,8 @@
     xhr.responseType = 'json';
 
     xhr.open('GET', LOAD_URL);
+
+    xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.OK) {
@@ -56,13 +59,24 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = TIMEOUT_IN_MS;
-
     xhr.open('GET', LOAD_URL);
     xhr.send();
   };
 
+  var uploadData = function (data, onSuccess) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    xhr.addEventListener('load', function () {
+      onSuccess(xhr.response);
+    });
+
+    xhr.open('POST', UPLOAD_URL);
+    xhr.send(data);
+  };
+
   window.load = {
-    requestData: requestData
+    requestData: requestData,
+    uploadData: uploadData
   };
 })();

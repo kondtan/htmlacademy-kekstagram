@@ -2,9 +2,11 @@
 
 (function () {
   var KEYCODE = window.util.Keycode;
+
+  var uploadForm = document.querySelector('.img-upload__form');
   var uploadFileInput = document.querySelector('#upload-file');
   var editPhotoForm = document.querySelector('.img-upload__overlay');
-  var closeEditPhotoFormButton = document.querySelector('#upload-cancel');
+  var uploadCancelButton = document.querySelector('#upload-cancel');
 
   uploadFileInput.addEventListener('change', function () {
     editPhotoForm.classList.remove('hidden');
@@ -16,6 +18,7 @@
     editPhotoForm.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
     window.scale.setNewScaleValue(100);
+    uploadCancelButton.addEventListener('click', closeEditPhotoForm);
   };
 
   var closeEditPhotoForm = function () {
@@ -26,6 +29,7 @@
 
       editPhotoForm.classList.add('hidden');
       document.removeEventListener('keydown', onPopupEscPress);
+      window.effect.resetUploadForm();
     }
   };
 
@@ -35,13 +39,20 @@
     }
   };
 
-  // editPhotoForm.addEventListener('submit', function (evt) {
-  //   window.upload(new FormData(form), function (response) {
-  //     userDialog.classList.add('hidden');
-  //   });
-  //   evt.preventDefault();
-  // });
+  uploadForm.addEventListener('submit', function (evt) {
+    var formDataConstructor = new FormData(uploadForm);
+  // для вывода отправляемых данных в консоль:
+    for (var pair of fd.entries()) {
+      console.log(pair[0]+ ', ' + pair[1]);
+  }
+    evt.preventDefault();
+    window.effect.resetUploadForm();
+    editPhotoForm.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    uploadCancelButton.removeEventListener('click', closeEditPhotoForm);
+    document.removeEventListener('keydown', onPopupEscPress);
+  });
 
-  closeEditPhotoFormButton.addEventListener('click', closeEditPhotoForm);
   uploadFileInput.addEventListener('change', openEditPhotoForm);
+
 })();
