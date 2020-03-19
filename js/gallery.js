@@ -34,6 +34,12 @@
     usersPictures.appendChild(renderPictures(pictureArray));
   };
 
+  var closeMessage = function (evt) {
+    evt.preventDefault();
+    evt.target.parentNode.parentNode.remove();
+    evt.target.removeEventListener('click', closeMessage);
+  };
+
   var renderErrorMessage = function (message) {
     var error = errorTemplate.cloneNode(true);
     var errorButton = error.querySelector('.error__button');
@@ -42,10 +48,7 @@
     error.querySelector('h2').textContent = message;
     document.querySelector('main').appendChild(error);
 
-    errorButton.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      document.querySelector('.error').remove();
-    });
+    errorButton.addEventListener('click', closeMessage);
   };
 
   var renderSuccessMessage = function () {
@@ -54,13 +57,14 @@
 
     document.querySelector('main').appendChild(success);
 
-    successButton.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      document.querySelector('.success').remove();
-    });
+    successButton.addEventListener('click', closeMessage);
   };
 
-  window.async.requestData(loadPictures, renderErrorMessage);
+  var initializePage = function () {
+    window.async.requestData(loadPictures, renderErrorMessage);
+  };
+
+  initializePage();
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
