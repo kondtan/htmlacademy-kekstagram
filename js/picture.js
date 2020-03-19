@@ -58,7 +58,7 @@
     document.querySelector('body').classList.add('modal-open');
 
     renderBigPicture(pic);
-    commentsList.innerHTML = '';
+    commentsList.textContent = '';
     commentsList.appendChild(renderCommentArray(pic.comments));
 
     closeBigPictureButton.addEventListener('click', closeBigPicture);

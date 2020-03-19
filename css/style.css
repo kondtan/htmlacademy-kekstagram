@@ -1311,7 +1311,6 @@ main {
   margin-bottom: 50px;
 
   font-size: 32px;
-   /* без line-height строки сообщения об ошибке наезжают друг на друга */
   line-height: 1;
 }
 

@@ -5,52 +5,39 @@
 
   var uploadForm = document.querySelector('.img-upload__form');
   var uploadFileInput = document.querySelector('#upload-file');
-  var editPhotoForm = document.querySelector('.img-upload__overlay');
+  var uploadOverlay = document.querySelector('.img-upload__overlay');
   var uploadCancelButton = document.querySelector('#upload-cancel');
 
   uploadFileInput.addEventListener('change', function () {
-    editPhotoForm.classList.remove('hidden');
+    uploadOverlay.classList.remove('hidden');
     document.querySelector('body').classList.add('modal-open');
   });
 
   // работаем с открытием-закрытием окна редактирования фото
-  var openEditPhotoForm = function () {
-    editPhotoForm.classList.remove('hidden');
+  var openUploadForm = function () {
+    uploadOverlay.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
     window.scale.setNewScaleValue(100);
-    uploadCancelButton.addEventListener('click', closeEditPhotoForm);
-  };
-
-  var closeEditPhotoForm = function () {
-    // если фокус находится в поле ввода хэштега или комментария, нажатие на Esc не приводит к закрытию формы редактирования изображения
-    if (!document.activeElement.classList.contains('text__hashtags') && !document.activeElement.classList.contains('text__description')) {
-      // сбрасываем значение поля выбора файла #upload-file
-      uploadFileInput.value = '';
-
-      editPhotoForm.classList.add('hidden');
-      document.removeEventListener('keydown', onPopupEscPress);
-      window.effect.resetUploadForm();
-    }
+    uploadCancelButton.addEventListener('click', closeUploadForm);
   };
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === KEYCODE.ESC_KEY) {
-      closeEditPhotoForm();
+    if (evt.keyCode === KEYCODE.ESC_KEY && !document.activeElement.classList.contains('text__hashtags') && !document.activeElement.classList.contains('text__description')) {
+      closeUploadForm();
     }
   };
 
-  var cleanupForm = function () {
-    window.gallery.changeCursorToLoading();
+  var closeUploadForm = function () {
     window.effect.resetUploadForm();
-    editPhotoForm.classList.add('hidden');
+    uploadOverlay.classList.add('hidden');
     document.body.classList.remove('modal-open');
-    uploadCancelButton.removeEventListener('click', closeEditPhotoForm);
+    uploadCancelButton.removeEventListener('click', closeUploadForm);
     document.removeEventListener('keydown', onPopupEscPress);
   };
 
   uploadForm.addEventListener('submit', function (evt) {
     var formDataValue = new FormData(uploadForm);
-    cleanupForm();
+    closeUploadForm();
     window.async.uploadData(formDataValue, window.gallery.renderSuccessMessage, window.gallery.renderErrorMessage);
     // для вывода отправляемых данных в консоль:
     // for (var pair of formDataValue.entries()) {
@@ -59,6 +46,6 @@
     evt.preventDefault();
   });
 
-  uploadFileInput.addEventListener('change', openEditPhotoForm);
+  uploadFileInput.addEventListener('change', openUploadForm);
 
 })();
