@@ -2,11 +2,10 @@
 
 (function () {
   var MAX_AMOUNT_OF_PICTURES = 25;
-  var pictureTemplate = document.querySelector('#picture')
-  .content
-  .querySelector('.picture');
+  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var usersPictures = document.querySelector('.pictures');
   var errorTemplate = document.querySelector('#error').content;
+  var successTemplate = document.querySelector('#success').content;
   var pictureArray = [];
 
   var renderPicture = function (pictureContent, pictureIndex) {
@@ -35,14 +34,37 @@
     usersPictures.appendChild(renderPictures(pictureArray));
   };
 
-  var renderErrorMessage = function (message) {
-    var error = errorTemplate.cloneNode(true);
-    error.querySelector('button').innerHTML = 'Перезагрузите страницу';
-    error.querySelector('h2').innerHTML = message;
-    document.querySelector('main').appendChild(error);
+  var closeMessage = function (evt) {
+    evt.preventDefault();
+    evt.target.parentNode.parentNode.remove();
+    evt.target.removeEventListener('click', closeMessage);
   };
 
-  window.load.requestData(loadPictures, renderErrorMessage);
+  var renderErrorMessage = function (message) {
+    var error = errorTemplate.cloneNode(true);
+    var errorButton = error.querySelector('.error__button');
+
+    error.querySelector('button').textContent = 'Попробуйте еще раз';
+    error.querySelector('h2').textContent = message;
+    document.querySelector('main').appendChild(error);
+
+    errorButton.addEventListener('click', closeMessage);
+  };
+
+  var renderSuccessMessage = function () {
+    var success = successTemplate.cloneNode(true);
+    var successButton = success.querySelector('.success__button');
+
+    document.querySelector('main').appendChild(success);
+
+    successButton.addEventListener('click', closeMessage);
+  };
+
+  var initializePage = function () {
+    window.async.requestData(loadPictures, renderErrorMessage);
+  };
+
+  initializePage();
 
   usersPictures.addEventListener('click', function (evt) {
     if (evt.target.closest('a')) {
@@ -55,6 +77,8 @@
   window.gallery = {
     renderPictures: renderPictures,
     usersPictures: usersPictures,
-    loadPictures: loadPictures
+    loadPictures: loadPictures,
+    renderErrorMessage: renderErrorMessage,
+    renderSuccessMessage: renderSuccessMessage
   };
 })();
