@@ -20,7 +20,7 @@
       return parseInt(second.url.replace(/\D/g, ''), 10) - parseInt(first.url.replace(/\D/g, ''), 10);
     });
 
-    window.gallery.loadBufferedPictures(pictureArrayCopy);
+    window.debounce(window.gallery.loadBufferedPictures(pictureArrayCopy));
   };
 
   var sortPhotosByCommentsNumber = function () {
@@ -38,7 +38,7 @@
       return 0.5 - Math.random();
     });
 
-    window.gallery.loadBufferedPictures(randomPictureArray, MAX_RANDOM_ELEMENTS);
+    window.debounce(window.gallery.loadBufferedPictures(randomPictureArray, MAX_RANDOM_ELEMENTS));
   };
 
   var sortPhotos = function (filter) {
@@ -60,7 +60,7 @@
   var toggleFilter = function (evt) {
     var activeFilter = imgFilters.querySelector('.img-filters__button--active');
 
-    if (evt.target.nodeName === '.img-filters__button') {
+    if (evt.target.className === 'img-filters__button') {
       evt.preventDefault();
       activeFilter.classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
