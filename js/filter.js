@@ -28,6 +28,7 @@
     pictureArrayCopy.sort(function (second, first) {
       return first.comments.length - second.comments.length;
     });
+
     window.debounce(window.gallery.loadBufferedPictures(pictureArrayCopy));
   };
 
