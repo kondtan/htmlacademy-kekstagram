@@ -33,7 +33,7 @@
     return fragment;
   };
 
-  var loadPictures = function (pictures, amount) {
+  var loadBufferedPictures = function (pictures, amount) {
     if (amount === undefined) {
       amount = MAX_AMOUNT_OF_PICTURES;
     }
@@ -69,7 +69,7 @@
   };
 
   var initializePage = function () {
-    window.async.requestData(loadPictures, renderErrorMessage);
+    window.async.requestData(loadBufferedPictures, renderErrorMessage);
   };
 
   var clearGallery = function () {
@@ -92,7 +92,7 @@
   window.gallery = {
     renderPictures: renderPictures,
     usersPictures: usersPictures,
-    loadPictures: loadPictures,
+    loadBufferedPictures: loadBufferedPictures,
     renderErrorMessage: renderErrorMessage,
     renderSuccessMessage: renderSuccessMessage,
     pictureArray: returnPictureArray,

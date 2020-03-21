@@ -13,12 +13,22 @@
     imgFilters.classList.remove('img-filters--inactive');
   };
 
+  var sortPhotosByDefault = function () {
+    var pictureArrayCopy = window.gallery.pictureArray().slice();
+
+    pictureArrayCopy.sort(function (second, first) {
+      return parseInt(second.url.replace(/\D/g, ''), 10) - parseInt(first.url.replace(/\D/g, ''), 10);
+    });
+
+    window.gallery.loadBufferedPictures(pictureArrayCopy);
+  };
+
   var sortPhotosByCommentsNumber = function () {
     var pictureArrayCopy = window.gallery.pictureArray().slice();
     pictureArrayCopy.sort(function (second, first) {
       return first.comments.length - second.comments.length;
     });
-    window.gallery.loadPictures(pictureArrayCopy);
+    window.debounce(window.gallery.loadBufferedPictures(pictureArrayCopy));
   };
 
   var showTenRandomPhotos = function () {
@@ -28,23 +38,13 @@
       return 0.5 - Math.random();
     });
 
-    window.gallery.loadPictures(randomPictureArray, MAX_RANDOM_ELEMENTS);
-  };
-
-  var sortPhotosByName = function () {
-    var pictureArrayCopy = window.gallery.pictureArray().slice();
-
-    pictureArrayCopy.sort(function (second, first) {
-      return parseInt(second.url.replace(/\D/g, ''), 10) - parseInt(first.url.replace(/\D/g, ''), 10);
-    });
-
-    window.gallery.loadPictures(pictureArrayCopy);
+    window.gallery.loadBufferedPictures(randomPictureArray, MAX_RANDOM_ELEMENTS);
   };
 
   var sortPhotos = function (filter) {
     switch (filter) {
       case DEFAULT_FILTER:
-        sortPhotosByName();
+        sortPhotosByDefault();
         break;
       case RANDOM_FILTER:
         showTenRandomPhotos();
@@ -53,14 +53,14 @@
         sortPhotosByCommentsNumber();
         break;
       default:
-        sortPhotosByName();
+        sortPhotosByDefault();
     }
   };
 
   var toggleFilter = function (evt) {
     var activeFilter = imgFilters.querySelector('.img-filters__button--active');
 
-    if (evt.target.nodeName === 'BUTTON') {
+    if (evt.target.nodeName === '.img-filters__button') {
       evt.preventDefault();
       activeFilter.classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
