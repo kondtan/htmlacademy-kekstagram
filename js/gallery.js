@@ -19,19 +19,27 @@
     return pictureElement;
   };
 
-  var renderPictures = function (pictures) {
+  var returnPictureArray = function () {
+    return pictureArray;
+  };
+
+  var renderPictures = function (pictures, amount) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < MAX_AMOUNT_OF_PICTURES; i++) {
+    for (var i = 0; i < amount; i++) {
       fragment.appendChild(renderPicture(pictures[i], i));
     }
 
     return fragment;
   };
 
-  var loadPictures = function (pictures) {
+  var loadBufferedPictures = function (pictures, amount) {
+    if (amount === undefined) {
+      amount = MAX_AMOUNT_OF_PICTURES;
+    }
     pictureArray = pictures.slice();
-    usersPictures.appendChild(renderPictures(pictureArray));
+    usersPictures.appendChild(renderPictures(pictureArray, amount));
+    window.filtration.showImgFilters();
   };
 
   var closeMessage = function (evt) {
@@ -61,7 +69,14 @@
   };
 
   var initializePage = function () {
-    window.async.requestData(loadPictures, renderErrorMessage);
+    window.async.requestData(loadBufferedPictures, renderErrorMessage);
+  };
+
+  var clearGallery = function () {
+    var pictures = usersPictures.querySelectorAll('.picture');
+    pictures.forEach(function (element) {
+      element.remove();
+    });
   };
 
   initializePage();
@@ -77,8 +92,10 @@
   window.gallery = {
     renderPictures: renderPictures,
     usersPictures: usersPictures,
-    loadPictures: loadPictures,
+    loadBufferedPictures: loadBufferedPictures,
     renderErrorMessage: renderErrorMessage,
-    renderSuccessMessage: renderSuccessMessage
+    renderSuccessMessage: renderSuccessMessage,
+    pictureArray: returnPictureArray,
+    clearGallery: clearGallery
   };
 })();

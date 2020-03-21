@@ -68,7 +68,6 @@
   var uploadData = function (data, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', UPLOAD_URL);
-    xhr.setRequestHeader('Content-Type', 'multipart/form-data');
     processResponse(xhr, onSuccess, onError);
     xhr.send(data);
   };
