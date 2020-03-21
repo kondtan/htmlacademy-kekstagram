@@ -4,6 +4,7 @@
   var DEFAULT_EFFECT_LEVEL = 1;
   var DEFAULT_FILTER_NAME = 'none';
   var MAX_PHOBOS_INTENCITY = 3;
+  var MIN_HEAT_INTENCITY = 1;
   var MAX_HEAT_INTENCITY = 3;
   var MAX_MARVIN_INTENCITY = 100;
 
@@ -103,7 +104,7 @@
         uploadPreview.style.filter = 'blur(' + (intensity * MAX_PHOBOS_INTENCITY) + 'px)';
         break;
       case 'heat':
-        uploadPreview.style.filter = 'brightness(' + (intensity * MAX_HEAT_INTENCITY) + ')';
+        uploadPreview.style.filter = 'brightness(' + (intensity * (MAX_HEAT_INTENCITY - MIN_HEAT_INTENCITY) + MIN_HEAT_INTENCITY) + ')';
         break;
       default:
         uploadPreview.style.filter = '';
