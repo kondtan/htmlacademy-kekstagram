@@ -13,7 +13,6 @@
     document.querySelector('body').classList.add('modal-open');
   });
 
-  // работаем с открытием-закрытием окна редактирования фото
   var openUploadForm = function () {
     uploadOverlay.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
@@ -39,10 +38,6 @@
     var formDataValue = new FormData(uploadForm);
     closeUploadForm();
     window.async.uploadData(formDataValue, window.gallery.renderSuccessMessage, window.gallery.renderErrorMessage);
-    // для вывода отправляемых данных в консоль:
-    // for (var pair of formDataValue.entries()) {
-    //   console.log(pair[0]+ ', ' + pair[1]);
-    // };
     evt.preventDefault();
   });
 

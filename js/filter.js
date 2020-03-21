@@ -9,7 +9,6 @@
   var imgFilters = document.querySelector('.img-filters');
   var imgFiltersForm = imgFilters.querySelector('.img-filters__form');
 
-
   var showImgFilters = function () {
     imgFilters.classList.remove('img-filters--inactive');
   };
@@ -58,7 +57,6 @@
     }
   };
 
-  // Переключатель
   var toggleFilter = function (evt) {
     var activeFilter = imgFilters.querySelector('.img-filters__button--active');
 
@@ -67,22 +65,12 @@
       activeFilter.classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
     }
+
     window.gallery.clearGallery();
     sortPhotos(evt.target.id);
-
   };
 
   imgFiltersForm.addEventListener('click', toggleFilter);
-
-
-
-
-  // imgFilters.addEventListener('click', onImgFiltersClick);
-  // Показать дефолт фото
-  // Перемешать список фото
-  // Показать рандом
-  // Показать по комментам
-  // Дебаунс
 
   window.filtration = {
     showImgFilters: showImgFilters
