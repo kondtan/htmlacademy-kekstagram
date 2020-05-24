@@ -15,7 +15,10 @@
     "eslint-config-htmlacademy": "0.5.2"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "acorn": "^7.2.0",
+    "minimist": "^1.2.5"
+  },
   "scripts": {
     "test": "eslint js/"
   },
